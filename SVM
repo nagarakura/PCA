@@ -1,11 +1,9 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split,GridSearchCV # Import␣
-↪train_test_split function
+from sklearn.model_selection import train_test_split,GridSearchCV # Import␣ train_test_split function
 from sklearn.svm import SVC #Import svm model
-from sklearn.metrics import␣
-↪accuracy_score,confusion_matrix,classification_report,precision_score,recall_score
+from sklearn.metrics import␣ accuracy_score,confusion_matrix,classification_report,precision_score,recall_score
 
  data=pd.read_csv(r"C:\Users\amana\Downloads\glass.csv")
 data.head()
