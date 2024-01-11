@@ -1,1 +1,94 @@
 
+import pandas as pd
+import numpy as np
+
+data = pd.read_csv('covid.csv')
+
+data
+
+from sklearn import preprocessing
+le = preprocessing.LabelEncoder()
+pc_encoded=le.fit_transform(data['pc'].values)
+wbc_encoded=le.fit_transform(data['wbc'].values)
+mc_encoded=le.fit_transform(data['mc'].values)
+ast_encoded=le.fit_transform(data['ast'].values)
+bc_encoded=le.fit_transform(data['bc'].values)
+ldh_encoded=le.fit_transform(data['ldh'].values)
+Y=le.fit_transform(data['diagnosis'].values)
+
+X=np.array(list(zip(pc_encoded,wbc_encoded,mc_encoded,ast_encoded,bc_encoded,ldh_encoded)))
+X
+Y
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report
+model = MultinomialNB()
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,Y_train,Y_test=train_test_split(X,Y)
+
+model.fit(X_train, Y_train)
+y_pred = model.predict(X_test)
+
+print("Accuracy:",accuracy_score(Y_test, y_pred))
+
+print("\nReport")
+print(classification_report(Y_test,y_pred))
+
+
+
+-------------------
+If they ask  ROC curve then write this program
+--------------------
+
+
+import pandas as pd
+import numpy as np
+from sklearn import preprocessing
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_curve
+data = pd.read_csv('covid.csv')
+data
+
+le = preprocessing.LabelEncoder()
+pc = le.fit_transform(data['pc'].values)
+wbc = le.fit_transform(data['wbc'].values)
+mc = le.fit_transform(data['mc'].values)
+ast = le.fit_transform(data['ast'].values)
+bc = le.fit_transform(data['bc'].values)
+ldh = le.fit_transform(data['ldh'].values)
+y = le.fit_transform(data['diagnosis'].values)
+X = np.array(list(zip(pc, wbc, mc, ast, bc, ldh)))
+X
+
+xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.25)
+naivee = MultinomialNB()
+naivee.fit(xtrain, ytrain)
+ypred = naivee.predict(xtest)
+print("Accuracy: ", accuracy_score(ytest, ypred))
+print("Classification Report: \n", classification_report(ytest, ypred))
+Accuracy:  0.5714285714285714
+Classification Report: 
+              
+lr_probs = naivee.predict_proba(xtest)
+type(lr_probs)
+numpy.ndarray
+lr_probs
+
+lr_probs = lr_probs[:, 1]
+lr_probs
+
+lr_fpr, lr_tpr, _=roc_curve(ytest, lr_probs)
+lr_fpr
+
+lr_tpr
+
+from matplotlib import pyplot
+pyplot.plot(lr_fpr, lr_tpr, marker='.', label='Naive Bayes Classifier')
+pyplot.xlabel('False Positive Rate')
+pyplot.ylabel('True Positive Rate')
+pyplot.legend()
+pyplot.show()
+
