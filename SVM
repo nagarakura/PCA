@@ -1,11 +1,11 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split,GridSearchCV # Import␣ train_test_split function
-from sklearn.svm import SVC #Import svm model
-from sklearn.metrics import␣ accuracy_score,confusion_matrix,classification_report,precision_score,recall_score
+from sklearn.model_selection import train_test_splitn
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
 
- data=pd.read_csv(r"C:\Users\amana\Downloads\glass.csv")
+data=pd.read_csv(r"C:\Users\amana\Downloads\glass.csv")
 data.head()
 
 x = data.drop('Type',axis = 1)
@@ -21,7 +21,7 @@ model1.fit(x_train,y_train)
 model2.fit(x_train,y_train)
 model3.fit(x_train,y_train)
 
- ypred1=model1.predict(x_test)
+ypred1=model1.predict(x_test)
 ypred2=model2.predict(x_test)
 ypred3=model3.predict(x_test)
 
