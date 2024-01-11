@@ -49,3 +49,424 @@ print(final_prediction)
 
 from sklearn.metrics import accuracy_score
 print("Accuracy",accuracy_score(ytest,y_pred))
+
+-----------------------
+
+or
+(apply only commands not answers)
+
+
+Use an appropriate multi-dimensional data set to perform Logistic regression for multi class classification. Illustrate the gradient descent method and compute the regression parameters. Also demonstrate the effect of feature pre-processing like removal of noise, NAN’s, Missing value imputation.
+from random import seed
+from random import randrange
+from math import exp
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+Example for how KFold works
+import numpy as np
+from sklearn.model_selection import KFold
+
+sample = [100,200,300,400,500,600,700,800,900,100,110,120]
+kf = KFold(n_splits=3)
+
+for train_index, test_index in kf.split(sample):
+    print (train_index, test_index)
+[ 4  5  6  7  8  9 10 11] [0 1 2 3]
+[ 0  1  2  3  8  9 10 11] [4 5 6 7]
+[0 1 2 3 4 5 6 7] [ 8  9 10 11]
+dataset=pd.read_csv('stud-univ.csv')
+X = dataset.iloc[:,:-1]
+#X=np.array(list(zipped)).tolist()
+Y=dataset.iloc[:,-1]
+dataset.head()
+marks1	marks2	selected
+0	34.623660	78.024693	0
+1	30.286711	43.894998	0
+2	35.847409	72.902198	0
+3	60.182599	86.308552	1
+4	79.032736	75.344376	1
+X
+marks1	marks2
+0	34.623660	78.024693
+1	30.286711	43.894998
+2	35.847409	72.902198
+3	60.182599	86.308552
+4	79.032736	75.344376
+...	...	...
+95	83.489163	48.380286
+96	42.261701	87.103851
+97	99.315009	68.775409
+98	55.340018	64.931938
+99	74.775893	89.529813
+100 rows × 2 columns
+
+from sklearn import preprocessing
+X1 = preprocessing.scale(X)
+df = pd.DataFrame(X1, columns =['marks1','marks2'])
+print(df)
+      marks1    marks2
+0  -1.602248  0.638341
+1  -1.826256 -1.207541
+2  -1.539040  0.361294
+3  -0.282101  1.086368
+4   0.691528  0.493378
+..       ...       ...
+95  0.921707 -0.964957
+96 -1.207735  1.129382
+97  1.739129  0.138100
+98 -0.532226 -0.069772
+99  0.471658  1.260588
+
+[100 rows x 2 columns]
+from sklearn.model_selection import KFold 
+kf = KFold(n_splits=5) 
+for train_index , test_index in kf.split(X1):
+    xtrain , xtest = df.iloc[train_index,:],df.iloc[test_index,:]
+    ytrain , ytest = Y[train_index] , Y[test_index]
+    ytrain=list(ytrain)
+    x1=list(xtrain["marks1"].values)
+    x2=list(xtrain["marks2"].values)
+    b0=0.0
+    b1=0.0
+    b2=0.0
+    alpha=0.01
+    prediction=[]
+    epoch=10000
+    for j in range(epoch):
+        for i in range(len(xtrain)):
+            pred=1/(1+np.exp(-(b0+b1*x1[i]+b2*x2[i])))
+            error=ytrain[i]-pred
+            cons=1-pred
+            b0=b0+(alpha*error*pred*cons*1)
+            b1=b1+(alpha*error*pred*cons*x1[i])
+            b2=b2+(alpha*error*pred*cons*x2[i])
+        
+print(b0)
+print(b1)
+print(b2)
+1.608617676044035
+4.076259766954401
+3.308167027822448
+x1test=list(xtest["marks1"].values)
+x2test=list(xtest["marks2"].values)
+prediction1=[]
+for i in range(len(xtest)):
+    pred1=1/(1+np.exp(-(b0+b1*x1test[i]+b2*x2test[i])))
+    print(pred1)
+    prediction1.append(pred1)
+0.99921475663197
+0.9833998621325795
+0.8836030039781458
+0.20403526666255736
+0.9998921311886052
+0.9965617163754236
+0.25064684730783726
+0.9996677527853798
+0.9999438560421458
+0.1028103531248994
+0.999929190745255
+0.9999760525021602
+0.0024357120470636863
+0.9988915071488932
+0.9512534892294023
+0.897844069953467
+0.6039043254201892
+0.9998942806028975
+0.31180580437748934
+0.999548034846009
+for i in range(len(prediction1)):
+    prediction1[i]=round(prediction1[i])
+prediction1
+[1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1]
+ytest
+80    1
+81    1
+82    1
+83    1
+84    1
+85    1
+86    0
+87    1
+88    1
+89    0
+90    1
+91    1
+92    0
+93    1
+94    1
+95    1
+96    1
+97    1
+98    1
+99    1
+Name: selected, dtype: int64
+from sklearn.metrics import accuracy_score
+print(accuracy_score(ytest,prediction1))
+0.9
+Feature pre-processing like removal of noise, NAN’s, Missing value imputation.
+There are the convenience methods, dropna() (which removes NA values) and fillna() (which fills in NA values) in pandas.
+import pandas as pd
+import numpy as np
+#importing the dataset into kaggle
+df = pd.read_csv("titanic dataset.csv")
+df.drop("Name",axis=1,inplace=True)
+df.drop("Ticket",axis=1,inplace=True)
+df.drop("PassengerId",axis=1,inplace=True)
+df.drop("Cabin",axis=1,inplace=True)
+df.drop("Embarked",axis=1,inplace=True)
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+df['Sex'] = le.fit_transform(df['Sex'])
+newdf=df
+newdf
+Survived	Pclass	Sex	Age	SibSp	Parch	Fare
+0	0	3	1	22.0	1	0	7.2500
+1	1	1	0	38.0	1	0	71.2833
+2	1	3	0	26.0	0	0	7.9250
+3	1	1	0	35.0	1	0	53.1000
+4	0	3	1	35.0	0	0	8.0500
+...	...	...	...	...	...	...	...
+886	0	2	1	27.0	0	0	13.0000
+887	1	1	0	19.0	0	0	30.0000
+888	0	3	0	NaN	1	2	23.4500
+889	1	1	1	26.0	0	0	30.0000
+890	0	3	1	32.0	0	0	7.7500
+891 rows × 7 columns
+
+#splitting the data into x and y
+y = df['Survived']
+df.drop("Survived",axis=1,inplace=True)
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 6 columns):
+ #   Column  Non-Null Count  Dtype  
+---  ------  --------------  -----  
+ 0   Pclass  891 non-null    int64  
+ 1   Sex     891 non-null    int32  
+ 2   Age     714 non-null    float64
+ 3   SibSp   891 non-null    int64  
+ 4   Parch   891 non-null    int64  
+ 5   Fare    891 non-null    float64
+dtypes: float64(2), int32(1), int64(3)
+memory usage: 38.4 KB
+print(df.isnull().sum())
+Pclass      0
+Sex         0
+Age       177
+SibSp       0
+Parch       0
+Fare        0
+dtype: int64
+Filling the missing data with the mean or median value if it’s a numerical variable.
+import copy
+updated_df = copy.deepcopy(df)
+updated_df['Age']=updated_df['Age'].fillna(updated_df['Age'].mean())
+updated_df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 6 columns):
+ #   Column  Non-Null Count  Dtype  
+---  ------  --------------  -----  
+ 0   Pclass  891 non-null    int64  
+ 1   Sex     891 non-null    int32  
+ 2   Age     891 non-null    float64
+ 3   SibSp   891 non-null    int64  
+ 4   Parch   891 non-null    int64  
+ 5   Fare    891 non-null    float64
+dtypes: float64(2), int32(1), int64(3)
+memory usage: 38.4 KB
+print(updated_df.isnull().sum())
+Pclass    0
+Sex       0
+Age       0
+SibSp     0
+Parch     0
+Fare      0
+dtype: int64
+print(df.isnull().sum())
+Pclass      0
+Sex         0
+Age       177
+SibSp       0
+Parch       0
+Fare        0
+dtype: int64
+Imputation with an additional column
+updated_df1 = df
+updated_df1['Ageismissing'] = updated_df1['Age'].isnull()
+updated_df1.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 7 columns):
+ #   Column        Non-Null Count  Dtype  
+---  ------        --------------  -----  
+ 0   Pclass        891 non-null    int64  
+ 1   Sex           891 non-null    int32  
+ 2   Age           714 non-null    float64
+ 3   SibSp         891 non-null    int64  
+ 4   Parch         891 non-null    int64  
+ 5   Fare          891 non-null    float64
+ 6   Ageismissing  891 non-null    bool   
+dtypes: bool(1), float64(2), int32(1), int64(3)
+memory usage: 39.3 KB
+from sklearn.impute import SimpleImputer
+my_imputer = SimpleImputer(strategy = 'median')
+data_new = my_imputer.fit_transform(updated_df1)
+updated_df1.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 7 columns):
+ #   Column        Non-Null Count  Dtype  
+---  ------        --------------  -----  
+ 0   Pclass        891 non-null    int64  
+ 1   Sex           891 non-null    int32  
+ 2   Age           714 non-null    float64
+ 3   SibSp         891 non-null    int64  
+ 4   Parch         891 non-null    int64  
+ 5   Fare          891 non-null    float64
+ 6   Ageismissing  891 non-null    bool   
+dtypes: bool(1), float64(2), int32(1), int64(3)
+memory usage: 39.3 KB
+Logistic Regression on Diabetes Dataset (By Archana Madam)
+## from random import seed
+from random import randrange
+from csv import reader
+from math import exp
+ 
+# Load a CSV file
+def load_csv(filename):
+	dataset = list()
+	with open(filename, 'r') as file:
+		csv_reader = reader(file)
+		for row in csv_reader:
+			if not row:
+				continue
+			dataset.append(row)
+	return dataset
+ 
+# Convert string column to float
+def str_column_to_float(dataset, column):
+	for row in dataset:
+		row[column] = float(row[column].strip())
+ 
+# Find the min and max values for each column
+def dataset_minmax(dataset):
+	minmax = list()
+	for i in range(len(dataset[0])):
+		col_values = [row[i] for row in dataset]
+		value_min = min(col_values)
+		value_max = max(col_values)
+		minmax.append([value_min, value_max])
+	return minmax
+ 
+# Rescale dataset columns to the range 0-1
+def normalize_dataset(dataset, minmax):
+	for row in dataset:
+		for i in range(len(row)):
+			row[i] = (row[i] - minmax[i][0]) / (minmax[i][1] - minmax[i][0])
+ 
+# Split a dataset into k folds
+def cross_validation_split(dataset, n_folds):
+	dataset_split = list()
+	dataset_copy = list(dataset)
+	fold_size = int(len(dataset) / n_folds)
+	for i in range(n_folds):
+		fold = list()
+		while len(fold) < fold_size:
+			index = randrange(len(dataset_copy))
+			fold.append(dataset_copy.pop(index))
+		dataset_split.append(fold)
+	return dataset_split
+ 
+# Calculate accuracy percentage
+def accuracy_metric(actual, predicted):
+	correct = 0
+	for i in range(len(actual)):
+		if actual[i] == predicted[i]:
+			correct += 1
+	return correct / float(len(actual)) * 100.0
+ 
+# Evaluate an algorithm using a cross validation split
+def evaluate_algorithm(dataset, algorithm, n_folds, *args):
+	folds = cross_validation_split(dataset, n_folds)
+	scores = list()
+	for fold in folds:
+		train_set = list(folds)
+		train_set.remove(fold)
+		train_set = sum(train_set, [])
+		test_set = list()
+		for row in fold:
+			row_copy = list(row)
+			test_set.append(row_copy)
+			row_copy[-1] = None
+		predicted = algorithm(train_set, test_set, *args)
+		actual = [row[-1] for row in fold]
+		accuracy = accuracy_metric(actual, predicted)
+		scores.append(accuracy)
+	print(scores)
+	return scores
+
+def sigmoid(yhat):
+        value = 1.0 / (1.0 + exp(-yhat))
+        return value
+ 
+# Make a prediction with coefficients
+def predict(row, coefficients):
+	yhat = coefficients[0]
+	for i in range(len(row)-1):
+		yhat += coefficients[i + 1] * row[i]
+		value = sigmoid(yhat)
+	return value
+ 
+# Estimate logistic regression coefficients using stochastic gradient descent
+def coefficients_sgd(train, l_rate, n_epoch):
+    coef = [0.0 for i in range(len(train[0]))]
+    for epoch in range(n_epoch):
+        for row in train:
+            yhat = predict(row, coef)
+            error = row[-1] - yhat
+            coef[0] = coef[0] + l_rate * error * yhat * (1.0 - yhat)
+            for i in range(len(row)-1):
+                coef[i + 1] = coef[i + 1] + l_rate * error * yhat * (1.0 - yhat) * row[i]     
+    print("Coef",coef)
+    return coef
+ 
+# Linear Regression Algorithm With Stochastic Gradient Descent
+def logistic_regression(train, test, l_rate, n_epoch):
+    predictions = list()
+    coef = coefficients_sgd(train, l_rate, n_epoch)
+    for row in test:
+        yhat = predict(row, coef)
+        yhat = round(yhat)
+        predictions.append(yhat)
+    print(predictions)
+    return(predictions)
+ 
+# Test the logistic regression algorithm on the diabetes dataset
+#seed(1)
+# load and prepare data
+filename = 'Student-University.csv'
+dataset = load_csv(filename)
+for i in range(len(dataset[0])):
+	str_column_to_float(dataset, i)
+# normalize
+minmax = dataset_minmax(dataset)
+normalize_dataset(dataset, minmax)
+# evaluate algorithm
+n_folds = 5
+l_rate = 0.1
+n_epoch = 100
+scores = evaluate_algorithm(dataset, logistic_regression, n_folds, l_rate, n_epoch)
+Coef [-3.4615132957274635, 4.241530266104096, 3.6867272574470524]
+[1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1]
+Coef [-3.550444368846764, 4.365946498198619, 3.6416391763640994]
+[0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0]
+Coef [-3.3472409295812406, 4.236589367917502, 3.512244419250508]
+[1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1]
+Coef [-3.61196717512285, 4.20702698049345, 3.768429859148975]
+[1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1]
+Coef [-3.4439042266810187, 4.057109612310285, 3.9115087426648243]
+[0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1]
+[90.0, 85.0, 95.0, 90.0, 90.0]
