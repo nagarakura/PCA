@@ -1,1 +1,126 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+df=pd.read_csv('Food-Truck.csv')
+df
+
+x_mean=df['X'].mean()
+y_mean=df['Y'].mean()
+print(x_mean,y_mean)
+
+df['x-x_mean']=df['X']-x_mean
+df['y-y_mean']=df['Y']-y_mean
+df['x-x_mean^2']=df['x-x_mean']**2
+df['y-y_mean^2']=df['y-y_mean']**2
+df
+
+df['(x-x_mean).(y-y_mean)']=df['x-x_mean']*df['y-y_mean']
+df
+
+sum_of_XmeanYmean=df['(x-x_mean).(y-y_mean)'].sum()
+sum_of_XmeanYmean
+
+sum_of_XmeanSqr=df['x-x_mean^2'].sum()
+sum_of_YmeanSqr=df['y-y_mean^2'].sum()
+sum_of_XmeanSqr,sum_of_YmeanSqr
+
+r=sum_of_XmeanYmean/(sum_of_XmeanSqr*sum_of_YmeanSqr)**0.5
+r
+
+n=df.shape[0]
+sx=(sum_of_XmeanSqr/n-1)**0.5
+sy=(sum_of_YmeanSqr/n-1)**0.5
+sx,sy
+
+m=(r*sy)/sx
+m
+
+c=y_mean-m*x_mean
+c
+
+df['y_pred']=m*df['X']+c
+df
+
+df['error']=df['Y']-df['y_pred']
+df['error^2']=df['error']**2
+df
+
+plot1=plt.scatter(df["X"],df["Y"])
+plot2=plt.plot(df["X"],df["y_pred"])
+plt.show()
+
+sse=df['error^2'].sum()
+sse
+
+sst=df['y-y_mean^2'].sum()
+sst
+
+df['y_pred-y_mean']=df['y_pred']-y_mean
+df['y_pred-y_mean^2']=df['y_pred-y_mean']**2
+df
+
+ssr=df['y_pred-y_mean^2'].sum()
+ssr
+
+R2=ssr/sst
+R2
+
+ 
+-------------------------------
+or
+-----------------------------
+
+import pandas as pd
+df=pd.read_csv("/home/ignis/Downloads/Food-Truck(For Linear Regression Program).csv")
+df
+
+import pandas as pd
+column_names = df.columns
+print(column_names)
+
+import matplotlib.pyplot as plt
+import pandas as pd
+df.columns = ['Population', 'Profit']
+X = df['Population']
+y = df['Profit']
+plt.scatter(X, y)
+plt.xlabel('Population (in 10,000s)')
+plt.ylabel('Profit (in $10,000s)')
+plt.title('Food Truck Profit vs. Population')
+plt.grid(True)
+plt.show()
+
+import numpy as np
+S_x = np.std(X)
+S_y = np.std(y)
+
+r = np.corrcoef(X, y)[0, 1]
+m = r * (S_y / S_x)
+print("Slope (m):", m)
+
+c=X.mean() - m * y.mean()
+c
+
+df["y_prediction"]=m * X + c
+df
+
+y_mean=np.mean(df["y_prediction"])
+ym=np.mean(y)
+sse=np.sum((y-df["y_prediction"])**2)
+sse
+
+y_mean=np.mean(df["y_prediction"])
+ym=np.mean(y)
+sse=np.sum((y-df["y_prediction"])**2)
+sse
+
+ssr=np.sum((df["y_prediction"]-y_mean)**2)
+ssr
+
+sst=np.sum((y-ym)**2)
+sst
+
+r_square=ssr/sst
+r_square
+
+ 
 
