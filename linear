@@ -1,3 +1,51 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import statistics as st
+
+df=pd.read_csv("Food-Truck.csv",names=['a','b'])
+x=df['a']
+y=df['b']
+x_mean=st.mean(x);
+y_mean=st.mean(y)
+plt.scatter(x,y)
+
+
+n=0
+d=0
+for i in range(len(x)):
+ n+=(x[i]-x_mean)*(y[i]-y_mean)
+ d+=(x[i]-x_mean)**2
+m=n/d
+c=y_mean-m*x_mean
+line=[]
+for i in x:
+ line.append(m*i+c)
+plt.scatter(x,y,label='points',color='r')
+plt.plot(x,line,label='line')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+
+
+nm=st.mean(line)
+sse=0
+ssr=0
+sst=0
+for i in range(len(y)):
+ sse+=(y[i]-line[i])**2
+for i in range(len(line)):
+ ssr+=(line[i]-nm)**2
+for i in range(len(y)):
+ sst+=(y[i]-y_mean)**2
+r_sq=1-(sse/sst)
+print(sse,ssr,sst,r_sq)
+ 
+
+---------------
+or
+-------------
+
 import pandas as pd
 import matplotlib.pyplot as plt
 df=pd.read_csv('Food-Truck.csv')
@@ -65,62 +113,7 @@ R2=ssr/sst
 R2
 
  
--------------------------------
-or
------------------------------
 
-import pandas as pd
-df=pd.read_csv("/home/ignis/Downloads/Food-Truck(For Linear Regression Program).csv")
-df
-
-import pandas as pd
-column_names = df.columns
-print(column_names)
-
-import matplotlib.pyplot as plt
-import pandas as pd
-df.columns = ['Population', 'Profit']
-X = df['Population']
-y = df['Profit']
-plt.scatter(X, y)
-plt.xlabel('Population (in 10,000s)')
-plt.ylabel('Profit (in $10,000s)')
-plt.title('Food Truck Profit vs. Population')
-plt.grid(True)
-plt.show()
-
-import numpy as np
-S_x = np.std(X)
-S_y = np.std(y)
-
-r = np.corrcoef(X, y)[0, 1]
-m = r * (S_y / S_x)
-print("Slope (m):", m)
-
-c=X.mean() - m * y.mean()
-c
-
-df["y_prediction"]=m * X + c
-df
-
-y_mean=np.mean(df["y_prediction"])
-ym=np.mean(y)
-sse=np.sum((y-df["y_prediction"])**2)
-sse
-
-y_mean=np.mean(df["y_prediction"])
-ym=np.mean(y)
-sse=np.sum((y-df["y_prediction"])**2)
-sse
-
-ssr=np.sum((df["y_prediction"]-y_mean)**2)
-ssr
-
-sst=np.sum((y-ym)**2)
-sst
-
-r_square=ssr/sst
-r_square
 
  
 
