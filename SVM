@@ -158,7 +158,6 @@ print(accuracy_score(y_test,ypred3))
 
 #Array method of using different kernels
 
-
 params_grid = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
                      'C': [1, 10, 100, 1000]},
                     {'kernel': ['linear'], 'C': [1, 10, 100, 1000]},
@@ -179,13 +178,6 @@ print('Best Gamma:',svm_model.best_estimator_.gamma,"\n")
 
 final_model = svm_model.best_estimator_
 Y_pred = final_model.predict(x_test)
-Best score for training data: 1.0 
-
-Best C: 10 
-
-Best Kernel: rbf 
-
-Best Gamma: 0.0001 
 
 print(accuracy_score(y_test,Y_pred))
-0.9384615384615385
+
