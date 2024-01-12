@@ -1,3 +1,6 @@
+mean-medimm
+--------------
+
 data = [115.3, 195.5, 120.5, 110.2, 90.4, 105.6, 110.9, 116.3, 122.3, 125.4]
 
 mean = sum(data) / len(data)
@@ -39,3 +42,104 @@ std_deviation_normalized = [(x - mean) / std_deviation for x in data]
 
 print(std_deviation_normalized)
 
+
+------------
+naiveB
+--------------
+
+import pandas as pd
+import numpy as np
+from sklearn import preprocessing
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report,roc_curve
+from sklearn.model_selection import train_test_split
+
+data = pd.read_csv(r"C:\Users\amana\Downloads\covid.csv")
+
+le = preprocessing.LabelEncoder()
+pc = le.fit_transform(data['pc'].values)
+wbc = le.fit_transform(data['wbc'].values)
+mc = le.fit_transform(data['mc'].values)
+ast = le.fit_transform(data['ast'].values)
+bc = le.fit_transform(data['bc'].values)
+ldh = le.fit_transform(data['ldh'].values)
+y = le.fit_transform(data['diagnosis'].values)
+X = np.array(list(zip(pc, wbc, mc, ast, bc, ldh)))
+
+xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.25)
+
+naivee = MultinomialNB()
+naivee.fit(xtrain, ytrain)
+ypred = naivee.predict(xtest)
+print("Accuracy: ", accuracy_score(ytest, ypred))
+print("Classification Report: \n", classification_report(ytest, ypred))
+
+lr_probs = naivee.predict_proba(xtest)[:,1]
+lr_fpr, lr_tpr, _=roc_curve(ytest, lr_probs)
+from matplotlib import pyplot
+pyplot.plot(lr_fpr, lr_tpr,label='Naive Bayes Classifier')
+
+pyplot.xlabel('False Positive Rate')
+pyplot.ylabel('True Positive Rate')
+pyplot.legend()
+pyplot.show()
+
+
+-------------------
+or
+--------------------
+
+
+import pandas as pd
+import numpy as np
+from sklearn import preprocessing
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_curve
+data = pd.read_csv('covid.csv')
+data
+
+le = preprocessing.LabelEncoder()
+pc = le.fit_transform(data['pc'].values)
+wbc = le.fit_transform(data['wbc'].values)
+mc = le.fit_transform(data['mc'].values)
+ast = le.fit_transform(data['ast'].values)
+bc = le.fit_transform(data['bc'].values)
+ldh = le.fit_transform(data['ldh'].values)
+y = le.fit_transform(data['diagnosis'].values)
+X = np.array(list(zip(pc, wbc, mc, ast, bc, ldh)))
+X
+
+xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.25)
+naivee = MultinomialNB()
+naivee.fit(xtrain, ytrain)
+ypred = naivee.predict(xtest)
+print("Accuracy: ", accuracy_score(ytest, ypred))
+print("Classification Report: \n", classification_report(ytest, ypred))
+Accuracy:  0.5714285714285714
+Classification Report: 
+              
+lr_probs = naivee.predict_proba(xtest)
+type(lr_probs)
+numpy.ndarray
+lr_probs
+
+lr_probs = lr_probs[:, 1]
+lr_probs
+
+lr_fpr, lr_tpr, _=roc_curve(ytest, lr_probs)
+lr_fpr
+
+lr_tpr
+
+from matplotlib import pyplot
+pyplot.plot(lr_fpr, lr_tpr, marker='.', label='Naive Bayes Classifier')
+pyplot.xlabel('False Positive Rate')
+pyplot.ylabel('True Positive Rate')
+pyplot.legend()
+pyplot.show()
+
+-----------
+svm
+----------
