@@ -85,61 +85,6 @@ pyplot.legend()
 pyplot.show()
 
 
--------------------
-or
---------------------
-
-
-import pandas as pd
-import numpy as np
-from sklearn import preprocessing
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import roc_curve
-data = pd.read_csv('covid.csv')
-data
-
-le = preprocessing.LabelEncoder()
-pc = le.fit_transform(data['pc'].values)
-wbc = le.fit_transform(data['wbc'].values)
-mc = le.fit_transform(data['mc'].values)
-ast = le.fit_transform(data['ast'].values)
-bc = le.fit_transform(data['bc'].values)
-ldh = le.fit_transform(data['ldh'].values)
-y = le.fit_transform(data['diagnosis'].values)
-X = np.array(list(zip(pc, wbc, mc, ast, bc, ldh)))
-X
-
-xtrain, xtest, ytrain, ytest = train_test_split(X, y, test_size=0.25)
-naivee = MultinomialNB()
-naivee.fit(xtrain, ytrain)
-ypred = naivee.predict(xtest)
-print("Accuracy: ", accuracy_score(ytest, ypred))
-print("Classification Report: \n", classification_report(ytest, ypred))
-Accuracy:  0.5714285714285714
-Classification Report: 
-              
-lr_probs = naivee.predict_proba(xtest)
-type(lr_probs)
-numpy.ndarray
-lr_probs
-
-lr_probs = lr_probs[:, 1]
-lr_probs
-
-lr_fpr, lr_tpr, _=roc_curve(ytest, lr_probs)
-lr_fpr
-
-lr_tpr
-
-from matplotlib import pyplot
-pyplot.plot(lr_fpr, lr_tpr, marker='.', label='Naive Bayes Classifier')
-pyplot.xlabel('False Positive Rate')
-pyplot.ylabel('True Positive Rate')
-pyplot.legend()
-pyplot.show()
-
 -----------
 3.svm
 ----------
@@ -318,7 +263,7 @@ from sklearn.metrics import accuracy_score
 print("Accuracy",accuracy_score(ytest,y_pred))
 
 ------------------
-linear
+7.linear
 ----------------
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -364,5 +309,50 @@ r_sq=1-(sse/sst)
 print(sse,ssr,sst,r_sq)
 
 --------------
-random forest
+8.random forest
 --------------
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+data=pd.read_csv(r"C:\Users\amana\Downloads\pima.csv")
+data.head()
+
+X = data.drop("Outcome", axis=1)
+y = data["Outcome"]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.20)
+
+classifier = RandomForestClassifier(n_estimators=100)
+
+classifier.fit(X_train, y_train)
+
+RandomForestClassifier()
+
+y_pred = classifier.predict(X_test)
+print(accuracy_score(y_test,y_pred))
+
+feature_importances_df = pd.DataFrame({"feature": list(X.columns), "importance":classifier.feature_importances_})
+feature_importances_df
+
+x=data.drop(['Outcome','SkinThickness'],axis=1)
+y=data['Outcome']
+
+x_tr,x_te,y_tr,y_te=train_test_split(x,y)
+classifier.fit(x_tr,y_tr)
+y_pred=classifier.predict(x_te)
+
+print("accuracy: ", accuracy_score(y_te,y_pred))
+
+from sklearn.tree import DecisionTreeClassifier
+dt=DecisionTreeClassifier()
+dt.fit(x_tr,y_tr)
+y_pr=dt.predict(x_te)
+print("accuracy: ",accuracy_score(y_te,y_pr))
+
+------------------
+k means
+------------------
