@@ -143,3 +143,50 @@ pyplot.show()
 -----------
 svm
 ----------
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import statistics as st
+
+df=pd.read_csv("Food-Truck.csv",names=['a','b'])
+x=df['a']
+y=df['b']
+x_mean=st.mean(x);
+y_mean=st.mean(y)
+plt.scatter(x,y)
+
+
+n=0
+d=0
+for i in range(len(x)):
+ n+=(x[i]-x_mean)*(y[i]-y_mean)
+ d+=(x[i]-x_mean)**2
+m=n/d
+c=y_mean-m*x_mean
+line=[]
+for i in x:
+ line.append(m*i+c)
+plt.scatter(x,y,label='points',color='r')
+plt.plot(x,line,label='line')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+
+
+nm=st.mean(line)
+sse=0
+ssr=0
+sst=0
+for i in range(len(y)):
+ sse+=(y[i]-line[i])**2
+for i in range(len(line)):
+ ssr+=(line[i]-nm)**2
+for i in range(len(y)):
+ sst+=(y[i]-y_mean)**2
+r_sq=1-(sse/sst)
+print(sse,ssr,sst,r_sq)
+
+--------------
+DT
+_______________
+
